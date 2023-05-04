@@ -1,40 +1,48 @@
 pipeline {
-
-agent {
-			label{
-						label 'built-in'
+	
+		agent {
+			label {
+					label "built-in"
+					customWorkspace "/mnt/master"
 			}
-}
-
-stages{
-			stage ('install-tree'){
-								steps{
-											sh "yum install tree -y"
-								}
+		}
+		
+		stages {
+			
+			stage ("on-master"){
+				steps {
+						sh "yum install tree -y"
+				}
 			}
 			
-			stage ('install-soft-on-172.31.7.193'){
+			stage ("on-slave-1"){
 			agent {
-						label {
-									label "172.31.7.193"
-						}
+			
+			label {
+			
+				label "slave-1"
+				customWorkspace "/mnt/pipeline"
 			}
-								steps {
-										sh "sudo yum install httpd -y"
-										sh "sudo yum install tree -y"
-								}
+			}
+			steps {
+				sh "sudo yum install httpd -y"
+				sh "sudo yum install tree -y"
+			}
 			}
 			
-			stage ('install-soft-on-172.31.15.170'){
+			stage ("on-slave-2"){
 			agent {
-						label {
-									label "172.31.15.170"
-						}
+			label {
+				label "slave-2"
+				customWorkspace "/mnt/pipeline"
 			}
-								steps {
-										sh "sudo yum install httpd -y"
-										sh "sudo yum install tree -y"
-								}
 			}
-}
+			steps {
+				sh "sudo yum install httpd -y"
+				sh "sudo yum install tree -y"
+			}
+			}
+		
+		}
+
 }
